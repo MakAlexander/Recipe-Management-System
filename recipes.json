@@ -1,0 +1,28 @@
+{
+    "Pancakes": {
+        "ingredients": [
+            {
+                "name": "Flour",
+                "quantity": "2 cups"
+            },
+            {
+                "name": "Eggs",
+                "quantity": "3"
+            },
+            {
+                "name": "Milkl",
+                "quantity": "1 cup"
+            },
+            {
+                "name": "Sugar",
+                "quantity": "2 tbsp"
+            },
+            {
+                "name": "Butter",
+                "quantity": "1/2 cup"
+            }
+        ],
+        "instructions": "Mix ingredients and cook on a griddle",
+        "prep_time": "20"
+    }
+}
