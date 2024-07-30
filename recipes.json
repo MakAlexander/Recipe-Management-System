@@ -1,28 +1,16 @@
 {
-    "Pancakes": {
+    "Lemonade": {
         "ingredients": [
             {
-                "name": "Flour",
-                "quantity": "2 cups"
-            },
-            {
-                "name": "Eggs",
-                "quantity": "3"
-            },
-            {
-                "name": "Milkl",
-                "quantity": "1 cup"
+                "name": "Lemons",
+                "quantity": "7"
             },
             {
                 "name": "Sugar",
-                "quantity": "2 tbsp"
-            },
-            {
-                "name": "Butter",
-                "quantity": "1/2 cup"
+                "quantity": "3 cups"
             }
         ],
-        "instructions": "Mix ingredients and cook on a griddle",
-        "prep_time": "20"
+        "instructions": "Squeeze lemons into a pitcher and stir in the sugar until fully dissolved",
+        "prep_time": "15"
     }
 }

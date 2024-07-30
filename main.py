@@ -64,11 +64,15 @@ def delete_recipe(name):
         with open('recipes.json', 'r+') as file:
             recipes = json.load(file)
             if name in recipes:
-                del recipes[name]
-                file.seek(0)
-                json.dump(recipes, file, indent=4)
-                file.truncate()
-                return "Recipe deleted successfully."
+                confirm = input("Are you sure you would you like to delete your recipe? Deleted recipes cannot be recovered. Type “y” for yes and “n” for no: ").strip().lower()
+                if confirm == 'y':
+                    del recipes[name]
+                    file.seek(0)
+                    json.dump(recipes, file, indent=4)
+                    file.truncate()
+                    return f"Your recipe '{name}' was deleted successfully."
+                else:
+                    return "Delete operation canceled."
             else:
                 return "Recipe not found."
     except Exception as e:
@@ -91,6 +95,19 @@ Welcome to My Recipe Book. Type either of these commands to continue:
 /home                Brings you back to the homepage
 /exit                Exits My Recipe Book program
     """)
+
+def list_recipes():
+    try:
+        with open('recipes.json', 'r') as file:
+            recipes = json.load(file)
+            if recipes:
+                for i, (name, details) in enumerate(recipes.items(), 1):
+                    print(f"{i}. {name}")
+            else:
+                print("No recipes found.")
+    except Exception as e:
+        print(str(e))
+
 
 if __name__ == "__main__":
     landing_page()
@@ -128,6 +145,7 @@ Features at a Glance:
 
 * Delete Recipes:  Clear out the clutter by deleting recipes you no longer need. 
                    Keep your recipe book tidy and focused on what matters most.
+                   WARNING, deleted recipes cannot be recovered.
 
 
 Type ‘/home’ to go back to home:
@@ -146,7 +164,7 @@ Type ‘/home’ to go back to home:
             print("Available commands for managing recipes:")
             print("/add-recipe        Add a new recipe")
             print("/update-recipe     Update an existing recipe")
-            print("/delete-recipe     Delete a recipe")
+            print("/delete-recipe     Delete a recipe. WARNING, deleted recipes cannot be recovered")
             print("/home              Brings you back to the homepage")
             print("/exit              Exits My Recipe Book program")
             manage_command = input("Enter manage command: ").strip()
@@ -180,7 +198,20 @@ Type ‘/home’ to go back to home:
                 print(update_recipe(name, updated_ingredients, updated_instructions, updated_prep_time))
                 print("Type ‘/home’ to go back to home:")
             elif manage_command == "/delete-recipe":
-                name = input("Enter recipe name to delete: ").strip()
+                print("Please delete your recipe:")
+                list_recipes()
+                name = input("Which recipe would you like to delete? (Please enter the number or the full name of the recipe you want to delete): ").strip()
+                try:
+                    name = int(name) - 1
+                    with open('recipes.json', 'r') as file:
+                        recipes = json.load(file)
+                        if 0 <= name < len(recipes):
+                            name = list(recipes.keys())[name]
+                        else:
+                            print("Invalid number. Operation canceled.")
+                            continue
+                except ValueError:
+                    pass
                 print(delete_recipe(name))
                 print("Type ‘/home’ to go back to home:")
             elif manage_command == "/home":
@@ -190,6 +221,63 @@ Type ‘/home’ to go back to home:
                 break
             else:
                 print("Unknown manage command. Type /home for available commands.")
+        
+
+        elif command == "/add-recipe":
+            name = input("Enter recipe name: ").strip()
+            ingredients = []
+            while True:
+                ingredient_name = input("Enter ingredient name (or press Enter to finish): ").strip()
+                if not ingredient_name:
+                    break
+                quantity = input(f"Enter quantity for {ingredient_name}: ").strip()
+                ingredients.append({'name': ingredient_name, 'quantity': quantity})
+            instructions = input("Enter instructions: ").strip()
+            prep_time = input("Enter preparation time in minutes: ").strip()
+            print(add_recipe(name, ingredients, instructions, prep_time))
+            print("Type ‘/home’ to go back to home:")
+
+        elif command == "/update-recipe":
+            name = input("Enter recipe name to update: ").strip()
+            ingredients = []
+            while True:
+                ingredient_name = input("Enter ingredient name (or press Enter to finish): ").strip()
+                if not ingredient_name:
+                    break
+                quantity = input(f"Enter quantity for {ingredient_name}: ").strip()
+                ingredients.append({'name': ingredient_name, 'quantity': quantity})
+            instructions = input("Enter new instructions or press enter to skip: ").strip()
+            prep_time = input("Enter new preparation time in minutes or press enter to skip: ").strip()
+            updated_ingredients = ingredients if ingredients else None
+            updated_instructions = instructions if instructions else None
+            updated_prep_time = prep_time if prep_time else None
+            print(update_recipe(name, updated_ingredients, updated_instructions, updated_prep_time))
+            print("Type ‘/home’ to go back to home:")
+
+        elif command == "/delete-recipe":
+            while True:
+                print("""Please delete your recipe
+                      WARNING, deleted recipes cannot be recovered:""")
+                list_recipes()
+                name = input("Which recipe would you like to delete? (Please enter the number or the full name of the recipe you want to delete): ").strip()
+                try:
+                    name = int(name) - 1
+                    with open('recipes.json', 'r') as file:
+                        recipes = json.load(file)
+                        if 0 <= name < len(recipes):
+                            name = list(recipes.keys())[name]
+                        else:
+                            print("Invalid number. Please try again.")
+                            continue
+                except ValueError:
+                    pass
+                result = delete_recipe(name)
+                print(result)
+                if "successfully" in result:
+                    break
+            print("Type ‘/home’ to go back to home:")
+
+
         elif command == "/recipe-list":
             print(""" ____           _              _     _     _   
                      |  _ \ ___  ___(_)_ __   ___  | |   (_)___| |_ 
